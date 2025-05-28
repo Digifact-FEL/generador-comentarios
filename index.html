@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Comentarios Estándar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #f8f9fa;
+      --bg-dark: #1e1e2f;
+      --text-light: #212529;
+      --text-dark: #f1f1f1;
+      --card-light: #ffffff;
+      --card-dark: #2e2e3e;
+    }
+    body.light {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    .form-section {
+      background-color: var(--card-light);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    body.dark .form-section {
+      background-color: var(--card-dark);
+    }
+    .logo {
+      max-height: 80px;
+    }
+    .tab-content textarea {
+      height: 100px;
+      font-family: monospace;
+    }
+    .version {
+      font-size: 0.9rem;
+      color: gray;
+    }
+  </style>
+</head>
+<body class="light">
+  <div class="container my-5">
+    <div class="text-center mb-4">
+      <img src="https://via.placeholder.com/250x80?text=Logo+Empresa" alt="Logo de la Empresa" class="logo">
+    </div>
+
+    <div class="form-section">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2>🛠️ Generador de Comentarios Estándar</h2>
+        <span class="version">v1.0.0</span>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" role="switch" id="themeToggle">
+        <label class="form-check-label" for="themeToggle">Modo Oscuro</label>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="ticket" class="form-label">Ticket/Story/Épica *</label>
+          <input type="text" class="form-control" id="ticket" placeholder="Ej: DRTI-1847" required>
+        </div>
+        <div class="col-md-6">
+          <label for="tipo" class="form-label">Tipo *</label>
+          <select class="form-select" id="tipo" required>
+            <option value="FIX">Incidente</option>
+            <option value="REQ">Requerimiento</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="iniciales" class="form-label">Iniciales del Programador *</label>
+          <select class="form-select" id="iniciales" required>
+            <option value="JHE">JHE</option>
+            <option value="JCF">JCF</option>
+            <option value="PEC">PEC</option>
+            <option value="CAL">CAL</option>
+            <option value="DJM">DJM</option>
+            <option value="WLR">WLR</option>
+            <option value="WLM">WLM</option>
+            <option value="ALM">ALM</option>
+            <option value="JCG">JCG</option>
+            <option value="AHL">AHL</option>
+            <option value="MAL">MAL</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="fecha" class="form-label">Fecha *</label>
+          <input type="date" class="form-control" id="fecha" required>
+        </div>
+        <div class="col-12">
+          <label for="nombre" class="form-label">Nombre del incidente/requerimiento *</label>
+          <input type="text" class="form-control" id="nombre" placeholder="Ej: Validación de usuarios" required>
+        </div>
+        <div class="col-12">
+          <label for="adicional" class="form-label">Comentario adicional (opcional)</label>
+          <input type="text" class="form-control" id="adicional">
+        </div>
+        <div class="col-12 text-end">
+          <button class="btn btn-secondary me-2" onclick="limpiarFormulario()">Limpiar</button>
+          <button class="btn btn-primary" onclick="generar()">Generar Comentarios</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5">
+      <ul class="nav nav-tabs" id="languageTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="sql-tab" data-bs-toggle="tab" data-bs-target="#sql" type="button" role="tab">SQL</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="csharp-tab" data-bs-toggle="tab" data-bs-target="#csharp" type="button" role="tab">C#</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="js-tab" data-bs-toggle="tab" data-bs-target="#js" type="button" role="tab">JavaScript/TS/etc.</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="py-tab" data-bs-toggle="tab" data-bs-target="#py" type="button" role="tab">Python</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="xml-tab" data-bs-toggle="tab" data-bs-target="#xml" type="button" role="tab">XML</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="json-tab" data-bs-toggle="tab" data-bs-target="#json" type="button" role="tab">JSON</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="languageTabsContent"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const languages = {
+      sql: '--',
+      csharp: '//',
+      js: '//',
+      py: '#',
+      xml: '<!--',
+      json: '//'
+    };
+
+    const commentBlocks = {
+      xml: (text) => `<!-- ${text} -->`,
+      json: (text) => `// ${text}`,
+    };
+
+    function generar() {
+  const ticket = document.getElementById('ticket').value.trim();
+  const tipo = document.getElementById('tipo').value;
+  const iniciales = document.getElementById('iniciales').value;
+  const fecha = document.getElementById('fecha').value;
+  const nombre = document.getElementById('nombre').value.trim();
+  const adicional = document.getElementById('adicional').value.trim();
+
+  // Validación
+  if (!ticket || !tipo || !iniciales || !fecha || !nombre) {
+    alert("Por favor, complete todos los campos obligatorios marcados con *.");
+    return;
+  }
+
+  const ticketFormatted = `[${ticket}]`;
+  const base = `${tipo}::${ticketFormatted}::${fecha}::${iniciales}::${nombre}`;
+  const comentarioExtra = adicional ? ` - ${adicional}` : '';
+  const commit = `[${iniciales}][${ticket}] ${tipo} - ${nombre}${comentarioExtra}`;
+  const beginLine = `BEGIN-${base}`;
+  const endLine = `END-${base}`;
+
+  const content = Object.entries(languages).map(([lang, symbol]) => {
+    const line = symbol + ' ' + base;
+    const multi = (lang === 'xml' || lang === 'json')
+      ? `${commentBlocks[lang](beginLine)}\n${commentBlocks[lang](endLine)}`
+      : `${symbol} ${beginLine}\n${symbol} ${endLine}`;
+
+    return `
+      <div class="tab-pane fade${lang === 'sql' ? ' show active' : ''}" id="${lang}" role="tabpanel">
+        <div class="mt-3">
+          <h5>Commit</h5>
+          <div class="d-flex gap-2">
+            <textarea class="form-control" id="${lang}-commit" readonly>${commit}</textarea>
+            <button class="btn btn-outline-secondary" onclick="copiarAlPortapapeles('${lang}-commit')">🗌 Copiar</button>
+          </div>
+          <h5 class="mt-3">Comentario una línea</h5>
+          <div class="d-flex gap-2">
+            <textarea class="form-control" id="${lang}-line" readonly>${line}</textarea>
+            <button class="btn btn-outline-secondary" onclick="copiarAlPortapapeles('${lang}-line')">🗌 Copiar</button>
+          </div>
+          <h5 class="mt-3">Comentario multilinea (simulado)</h5>
+          <div class="d-flex gap-2">
+            <textarea class="form-control" id="${lang}-multi" readonly>${multi}</textarea>
+            <button class="btn btn-outline-secondary" onclick="copiarAlPortapapeles('${lang}-multi')">🗌 Copiar</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('languageTabsContent').innerHTML = content;
+}
+    function copiarAlPortapapeles(id) {
+      const texto = document.getElementById(id);
+      texto.select();
+      texto.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+    }
+
+    function limpiarFormulario() {
+      document.getElementById('ticket').value = '';
+      document.getElementById('tipo').value = 'FIX';
+      document.getElementById('iniciales').value = 'JHE';
+      document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+      document.getElementById('nombre').value = '';
+      document.getElementById('adicional').value = '';
+      document.getElementById('languageTabsContent').innerHTML = '';
+    }
+
+    window.onload = () => {
+      document.getElementById("fecha").value = new Date().toISOString().split('T')[0];
+      document.getElementById('themeToggle').addEventListener('change', function () {
+        document.body.className = this.checked ? 'dark' : 'light';
+      });
+    }
+  </script>
+</body>
+</html>
