@@ -171,7 +171,7 @@
   const endLine = `END-${base}`;
 
   const content = Object.entries(languages).map(([lang, symbol]) => {
-    const line = symbol + ' ' + base;
+    const line = symbol + ' ' + base + (lang === 'xml' ? '-->' : '');
     const multi = (lang === 'xml' || lang === 'json')
       ? `${commentBlocks[lang](beginLine)}\n${commentBlocks[lang](endLine)}`
       : `${symbol} ${beginLine}\n${symbol} ${endLine}`;
