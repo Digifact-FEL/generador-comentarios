@@ -47,7 +47,7 @@
 <body class="light">
   <div class="container my-5">
     <div class="text-center mb-4">
-      <img src="https://via.placeholder.com/250x80?text=Logo+Empresa" alt="Logo de la Empresa" class="logo">
+      <img src="https://raw.githubusercontent.com/alehernandezdf/Images/main/LogoDigifact.png" alt="" class="logo">
     </div>
 
     <div class="form-section">
@@ -79,14 +79,14 @@
             <option value="JCF">JCF</option>
             <option value="PEC">PEC</option>
             <option value="CAL">CAL</option>
-            <option value="DJH">DJH</option>
+            <option value="DJM">DJM</option>
             <option value="WLR">WLR</option>
             <option value="WLM">WLM</option>
             <option value="ALM">ALM</option>
             <option value="JCG">JCG</option>
             <option value="AHL">AHL</option>
             <option value="MAL">MAL</option>
-            <option value="JMJ">JMJ</option>
+            <option value="MAL">JMJ</option>
           </select>
         </div>
         <div class="col-md-6">
@@ -171,7 +171,7 @@
   const endLine = `END-${base}`;
 
   const content = Object.entries(languages).map(([lang, symbol]) => {
-    const line = symbol + ' ' + base + (lang === 'xml' ? ' -->' : '');
+    const line = symbol + ' ' + base;
     const multi = (lang === 'xml' || lang === 'json')
       ? `${commentBlocks[lang](beginLine)}\n${commentBlocks[lang](endLine)}`
       : `${symbol} ${beginLine}\n${symbol} ${endLine}`;
