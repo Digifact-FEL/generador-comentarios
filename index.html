@@ -145,7 +145,7 @@
       py: '#',
       xml: '<!--',
       json: '//',
-      react: '// '
+      react: '{/* '
     };
 
     const commentBlocks = {
@@ -175,7 +175,7 @@
     const endLine = `END-${base}`;
 
     const content = Object.entries(languages).map(([lang, symbol]) => {
-        const line = symbol + ' ' + base;
+        const line = symbol + ' ' + base + (lang === 'xml' ? ' -->' : lang === 'react' ? '  */}' : '');
         const multi = (lang === 'xml' || lang === 'json' || lang === 'react') 
           ? `${commentBlocks[lang](beginLine)}\n${commentBlocks[lang](endLine)}` 
           : `${symbol} ${beginLine}\n${symbol} ${endLine}`;
@@ -231,3 +231,4 @@
   </script>
 </body>
 </html>
+
